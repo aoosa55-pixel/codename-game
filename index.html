@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codenames Web Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <!-- หน้าหลัก: สร้าง/เข้าร่วมห้อง -->
+    <div id="home-screen" class="screen">
+      <div class="card-box">
+        <h1>🕵️ CODENAMES 🕵️</h1>
+        <p class="subtitle">เกมถอดรหัสสลับสปาย</p>
+        
+        <div class="form-group">
+          <label>ชื่อของคุณ:</label>
+          <input type="text" id="player-name" placeholder="ใส่ชื่อเล่น..." maxlength="12">
+        </div>
+
+        <button id="btn-create-room" class="btn-primary">สร้างห้องใหม่</button>
+        <div class="divider">หรือ</div>
+
+        <div class="form-group">
+          <input type="text" id="room-code-input" placeholder="ใส่รหัสห้อง 4 หลัก" maxlength="4">
+          <button id="btn-join-room" class="btn-secondary">เข้าร่วมห้อง</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- หน้า Lobby: เลือกทีม/บทบาท -->
+    <div id="lobby-screen" class="screen hidden">
+      <div class="card-box wide">
+        <h2>รหัสห้อง: <span id="display-room-code" class="highlight">----</span></h2>
+        <p>จำนวนผู้เล่น: <span id="player-count">0</span> คน</p>
+
+        <div class="teams-container">
+          <!-- ทีมแดง -->
+          <div class="team-card red-team">
+            <h3>🔴 ทีมแดง (Red)</h3>
+            <div class="role-group">
+              <h4>🕵️‍♂️ Spymaster (หัวหน้า)</h4>
+              <div id="red-spymaster-list" class="player-list"></div>
+              <button onclick="selectRole('red', 'spymaster')" class="btn-role">+ เป็นหัวหน้า</button>
+            </div>
+            <div class="role-group">
+              <h4>👥 Operatives (สายลับ)</h4>
+              <div id="red-operatives-list" class="player-list"></div>
+              <button onclick="selectRole('red', 'operative')" class="btn-role">+ เป็นสายลับ</button>
+            </div>
+          </div>
+
+          <!-- ทีมน้ำเงิน -->
+          <div class="team-card blue-team">
+            <h3>🔵 ทีมน้ำเงิน (Blue)</h3>
+            <div class="role-group">
+              <h4>🕵️‍♂️ Spymaster (หัวหน้า)</h4>
+              <div id="blue-spymaster-list" class="player-list"></div>
+              <button onclick="selectRole('blue', 'spymaster')" class="btn-role">+ เป็นหัวหน้า</button>
+            </div>
+            <div class="role-group">
+              <h4>👥 Operatives (สายลับ)</h4>
+              <div id="blue-operatives-list" class="player-list"></div>
+              <button onclick="selectRole('blue', 'operative')" class="btn-role">+ เป็นสายลับ</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="lobby-actions">
+          <button id="btn-start-game" class="btn-start">🚀 เริ่มเกม Codenames!</button>
+          <button id="btn-leave-lobby" class="btn-leave">ออกจากห้อง</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- หน้า Game: กระดานเล่นเกม -->
+    <div id="game-screen" class="screen hidden">
+      <div class="game-header">
+        <div class="score-board">
+          <span class="score red-score">🔴 เหลือ <b id="red-left">8</b></span>
+          <span class="score blue-score">🔵 เหลือ <b id="blue-left">8</b></span>
+        </div>
+        <div id="turn-indicator" class="turn-box">กำลังโหลด...</div>
+        <button id="btn-end-turn" class="btn-pass hidden">🛑 จบตา/ข้าม</button>
+      </div>
+
+      <!-- แผง Spymaster บอกคำใบ้ -->
+      <div id="spymaster-panel" class="spymaster-controls" style="display: none;">
+        <button id="btn-open-clue-modal" class="btn-primary">🗣️ บอกคำใบ้และจำนวนคำ</button>
+      </div>
+
+      <!-- กระดานสายลับ (Operatives) -->
+      <div id="board-grid" class="board-grid"></div>
+
+      <!-- กระดานเฉลย Spymaster -->
+      <div id="spymaster-board-view" class="board-grid hidden" style="margin-top: 15px;"></div>
+    </div>
+  </div>
+
+  <!-- Pop-up เลือกจำนวนคำ -->
+  <div id="clue-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h3>กำหนดจำนวนคำใบ้</h3>
+      <select id="clue-count-wheel" class="wheel-select">
+        <option value="1">1 คำ</option>
+        <option value="2">2 คำ</option>
+        <option value="3">3 คำ</option>
+        <option value="4">4 คำ</option>
+        <option value="5" selected>5 คำ</option>
+      </select>
+      <div class="modal-actions">
+        <button id="btn-submit-clue" class="btn-primary">ส่งคำใบ้</button>
+        <button id="btn-close-clue" class="btn-leave">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pop-up จบเกม (GameOver Modal) -->
+  <div id="gameover-modal" class="modal-overlay hidden">
+    <div class="modal-box text-center">
+      <h2 id="gameover-title" style="font-size: 2rem; margin-bottom: 10px;">🏆 จบเกม!</h2>
+      <p id="gameover-reason" style="font-size: 1.2rem; margin-bottom: 20px; color: #ddd;"></p>
+      <button id="btn-restart-game" class="btn-primary" style="background: #28a745; width: 100%;">🔄 เล่นใหม่อีกครั้ง (กลับหน้า Lobby)</button>
+    </div>
+  </div>
+
+  <!-- Pop-up แจ้งเตือนทั่วไป -->
+  <div id="custom-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <h3 id="modal-title">แจ้งเตือน</h3>
+      <p id="modal-message"></p>
+      <button id="modal-btn-close" class="btn-primary" style="margin-top: 15px;">ตกลง</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
