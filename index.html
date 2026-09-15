@@ -31,6 +31,17 @@
           <input type="text" id="room-code-input" placeholder="ใส่รหัสห้อง 4 หลัก" maxlength="4">
           <button id="btn-join-room" class="btn-secondary">เข้าร่วมห้อง</button>
         </div>
+
+        <!-- ส่วน QR Code และ ก๊อปปี้ลิงก์ (Cyberpunk Theme) -->
+        <div class="qr-section">
+          <p class="qr-title">📱 สแกนเพื่อเข้าเล่นเกม</p>
+          <div class="qr-card">
+            <img id="game-qr-code" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://aoosa55-pixel.github.io/codename-game/" alt="QR Code">
+          </div>
+          <button id="btn-copy-link" onclick="copyGameLink()" class="btn-secondary btn-copy">
+            📋 ก๊อปปี้ลิงก์เข้าเกม
+          </button>
+        </div>
       </div>
     </div>
 

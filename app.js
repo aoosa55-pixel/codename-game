@@ -60,6 +60,16 @@ if (modalBtnClose) {
   });
 }
 
+// ฟังก์ชันก๊อปปี้ลิงก์เข้าเกม
+function copyGameLink() {
+  const gameUrl = "https://aoosa55-pixel.github.io/codename-game/";
+  navigator.clipboard.writeText(gameUrl).then(() => {
+    showPopUp("สำเร็จ", "📋 คัดลอกลิงก์เข้าเกมเรียบร้อยแล้ว!");
+  }).catch(err => {
+    console.error("ไม่สามารถคัดลอกลิงก์ได้: ", err);
+  });
+}
+
 // --- 3. สร้าง / เข้าร่วมห้อง ---
 if (btnCreateRoom) {
   btnCreateRoom.addEventListener("click", () => {
@@ -496,11 +506,11 @@ function handleCardClick(card, roomData) {
   }
 }
 
-// --- 11. ฟังก์ชันเปลี่ยนตาเล่น (ต้องจบแค่นี้) ---
+// --- 11. ฟังก์ชันเปลี่ยนตาเล่น ---
 function switchTurn(roomData) {
   const nextTurn = roomData.currentTurn === "red" ? "blue" : "red";
   database.ref(`codenames_rooms/${currentRoomCode}`).update({
     currentTurn: nextTurn,
     turnState: "clue"
   });
-} // <-- ปีกกาปิดของ switchTurn อยู่ตรงนี้!
+}
