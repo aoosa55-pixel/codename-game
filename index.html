@@ -2,10 +2,10 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Codenames Web Game</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -90,7 +90,7 @@
       </div>
     </div>
 
-    <!-- หน้า Game: กระดานเล่นเกม -->
+    <!-- หน้า Game: กระดานเล่นเกมแบบ Fit-to-Screen -->
     <div id="game-screen" class="screen hidden">
       <div class="game-header">
         <div class="score-board">
@@ -110,7 +110,7 @@
       <div id="board-grid" class="board-grid"></div>
 
       <!-- กระดานเฉลย Spymaster -->
-      <div id="spymaster-board-view" class="board-grid hidden" style="margin-top: 15px;"></div>
+      <div id="spymaster-board-view" class="board-grid hidden"></div>
     </div>
   </div>
 
@@ -135,9 +135,9 @@
   <!-- Pop-up จบเกม (GameOver Modal) -->
   <div id="gameover-modal" class="modal-overlay hidden">
     <div class="modal-box text-center">
-      <h2 id="gameover-title" style="font-size: 2rem; margin-bottom: 10px;">🏆 จบเกม!</h2>
-      <p id="gameover-reason" style="font-size: 1.2rem; margin-bottom: 20px; color: #ddd;"></p>
-      <button id="btn-restart-game" class="btn-primary" style="background: #28a745; width: 100%;">🔄 เล่นใหม่อีกครั้ง (กลับหน้า Lobby)</button>
+      <h2 id="gameover-title" style="font-size: 1.8rem; margin-bottom: 10px;">🏆 จบเกม!</h2>
+      <p id="gameover-reason" style="font-size: 1.1rem; margin-bottom: 20px; color: #ddd;"></p>
+      <button id="btn-restart-game" class="btn-primary" style="background: #28a745; color: #fff; width: 100%;">🔄 เล่นใหม่อีกครั้ง (กลับหน้า Lobby)</button>
     </div>
   </div>
 
@@ -146,7 +146,7 @@
     <div class="modal-box">
       <h3 id="modal-title">แจ้งเตือน</h3>
       <p id="modal-message"></p>
-      <button id="modal-btn-close" class="btn-primary" style="margin-top: 15px;">ตกลง</button>
+      <button id="modal-btn-close" class="btn-primary" style="margin-top: 15px; width: 100%;">ตกลง</button>
     </div>
   </div>
 
