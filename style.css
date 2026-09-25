@@ -491,5 +491,13 @@ input[type="text"]:focus {
   font-family: inherit;
   outline: none;
 }
+/* --- ปรับการแสดงผลชื่อผู้เล่นรองรับชื่อยาว --- */
+.player-list div {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  padding: 2px 0;
+}
 
 .modal-actions { display: flex; gap: 8px; justify-content: center; }
